@@ -5,14 +5,12 @@
 # It is intended to be named `lk`, short for "look"
 
 longView=$(which less || which more || echo "cat")
+dirView="ls --color=auto"
 
-# Doesn't work, TODO
-# if [ $# -lt 1 ]; then
-#     # take stdin instead
-#     names=/dev/stdin
-# else
-#     names=$@
-# fi
+if [ $# -lt 1 ]; then
+    # take stdin instead
+    $dirView $(pwd)
+fi
 
 for a in $@; do
     if [ $a == "" ]; then
@@ -21,7 +19,7 @@ for a in $@; do
         echo "$a does not exist" 1>&2
         exit -1
     elif [ -d $a ]; then
-        ls $a
+        $dirView $a
     elif [ $(tput lines) -ge $(($(wc -l < $a) - 2)) ]; then
         cat $a
     else
