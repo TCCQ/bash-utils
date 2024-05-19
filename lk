@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# This is helper that should replace a number of common commands
+#
+# It is intended to be named `lk`, short for "look"
+
+longView=$(which less || which more || echo "cat")
+
+# Doesn't work, TODO
+# if [ $# -lt 1 ]; then
+#     # take stdin instead
+#     names=/dev/stdin
+# else
+#     names=$@
+# fi
+
+for a in $@; do
+    if [ $a == "" ]; then
+       echo "Empty argument skipped"
+    elif [ ! -e $a ]; then
+        echo "$a does not exist" 1>&2
+        exit -1
+    elif [ -d $a ]; then
+        ls $a
+    elif [ $(tput lines) -ge $(($(wc -l < $a) - 2)) ]; then
+        cat $a
+    else
+        ${longView} $a
+    fi
+done
